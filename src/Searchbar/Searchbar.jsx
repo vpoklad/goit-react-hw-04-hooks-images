@@ -10,24 +10,26 @@ export default class Searchbar extends Component {
         this.setState({ searchInput: e.target.value })
     };
 
+    onSubmit = (e) => {
+        
+        e.preventDefault()
+        this.props.onSubmit(this.state.searchInput)
+        this.setState({searchInput: ""})
+    }
+
     render() {
 
         return(
             <header className="Searchbar">
-                <form className="SearchForm" onSubmit={(e) => {
-                    e.preventDefault()
-                    console.log(this.props.onSubmit)
-                    console.log(this.state.searchInput)
-                    this.props.onSubmit(this.state.searchInput)
-                }}>
+                <form className="SearchForm" onSubmit={this.onSubmit}>
         <button type="submit" className="SearchForm-button">
           <span className="SearchForm-button-label">Search</span>
         </button>
     
         <input
           className="SearchForm-input"
-          value={this.state.searchQue}
-          type="text"
+          value={this.state.searchInput}
+          type="search"
           autoComplete="off"
           autoFocus
           placeholder="Search images and photos"

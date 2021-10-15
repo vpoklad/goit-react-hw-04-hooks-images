@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
 export default function ImageGalleryItem({ item, handleImageClick }) {
-    const { webformatURL, id, } = item;
+    const { webformatURL, largeImageURL, tags, } = item;
         return(
-        <li className="ImageGalleryItem">
-  <img src={webformatURL} alt="" id= {id} onClick ={() => handleImageClick(id)} className="ImageGalleryItem-image" />
+        <li className="ImageGalleryItem" >
+  <img src={webformatURL} alt={tags}  onClick ={() => handleImageClick(largeImageURL)} className="ImageGalleryItem-image" />
 </li>
     )
 };
@@ -11,8 +11,9 @@ export default function ImageGalleryItem({ item, handleImageClick }) {
 
 ImageGalleryItem.propTypes = {
     item: PropTypes.shape({
-        webformatURL: PropTypes.string,
-        id: PropTypes.string,
+        webformatURL: PropTypes.string,    
+        largeURL: PropTypes.string,
+        tags: PropTypes.string,
     }),
     handleImageClick: PropTypes.func.isRequired,
 }

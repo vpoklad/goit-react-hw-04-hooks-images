@@ -1,13 +1,12 @@
 // import './App.css';
 
 import { Component } from 'react/cjs/react.production.min';
+import ImageGallery from './ImageGallery/ImageGallery';
 import Searchbar from './Searchbar/Searchbar';
-const KEY = 'dfsdfsdf';
+// const KEY = 'dfsdfsdf';
 class App extends Component {
   state = {
-    modalShow: false,
     searchQue: ' ',
-    pageNumber: 1,
   };
 
   componentDidMount() {}
@@ -17,7 +16,6 @@ class App extends Component {
   onFormSubmit = input => {
     this.setState({
       searchQue: input,
-      pageNumber: 1,
     });
   };
 
@@ -25,6 +23,7 @@ class App extends Component {
     return (
       <div className="App">
         <Searchbar onSubmit={this.onFormSubmit} />
+        <ImageGallery searchQuery={this.state.searchQue} />
       </div>
     );
   }
