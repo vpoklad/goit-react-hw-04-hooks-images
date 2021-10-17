@@ -3,7 +3,6 @@
 import { Component } from 'react/cjs/react.production.min';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Searchbar from './Searchbar/Searchbar';
-import { ToastContainer, toast } from 'react-toastify';
 
 class App extends Component {
   state = {
@@ -25,7 +24,6 @@ class App extends Component {
       <div className="App">
         <Searchbar onSubmit={this.onFormSubmit} />
         <ImageGallery searchQuery={this.state.searchQue} />
-        <ToastContainer />
       </div>
     );
   }

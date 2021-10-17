@@ -53,7 +53,7 @@ export default class ImageGallery extends Component {
         })
     }
     handleClick = (e) => {
-        this.setState({ status: "pending" });
+        // this.setState({ status: "pending" });
             
       picsearch.page = 1;
       picsearch.search()
