@@ -1,77 +1,75 @@
 // import PropTypes from 'prop-types'
-import { Component } from 'react'
+import { useState, useEffect } from 'react'
 import pixabayAPI from '../Services/pixabayAPI'
 import ImageGalleryItem from './ImageGalleryItem';
 import Modal from '../Modal/Modal';
 import MyLoader from '../Loader/Loader'
 import { Notification } from 'react-pnotify'
+import PropTypes from 'prop-types'
 
 
 
 const picsearch = new pixabayAPI();
-export default class ImageGallery extends Component {
+
+export default function ImageGallery({searchQuery}) {
     
-    state = {
-        searchResults: [],
-        serchHits:null,
-        status: "init",
-        largeURL: "",
-        errorMessage: "",
-    }
+  const [searchResults, setSearchResults ] = useState([]);
+  const [searchHits, setSearchHits ] = useState(null);
+  const [status, setStatus ] = useState("init");
+  const [largeURL, setLargeURL ] = useState("");
+  const [errorMessage, setErrorMessage ] = useState("");
+
     
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps !== this.props) {
-            this.setState({ status: "pending" });
-            picsearch.resetPage();
-          picsearch.searchQuery = this.props.searchQuery;
-          picsearch.search()
-            .then(searchResults => {
-              if (searchResults.hits.length > 0) {
-                
-                this.setState({ searchResults: searchResults.hits, serchHits: searchResults.total, status: 'success' });
-              }
-              else {
-                this.setState({ status: 'error', errorMessage: "Nothing found!"})
-              }
-            });
-           
-                
-                
-        }
+  useEffect(() => {
+    if (searchQuery === "") {
+      return      
     };
+    setStatus("pending");
+    picsearch.resetPage();
+    picsearch.searchQuery = searchQuery;
+    picsearch.search()
+      .then(searchResults => {
+        if (searchResults.hits.length > 0) {
+          setSearchResults(searchResults.hits);
+          setSearchHits(searchResults.total);
+          setStatus("success");         
+        }
+        else {
+          setErrorMessage("Nothing found!");
+          setStatus("error");          
+        }
+      });      
+  }, [searchQuery]);    
     
 
-    handleImageClick = (value) => {
-        this.setState({
-            largeURL: value,
-            status: 'modal',
-        })
-    }
-    onModalClose = () => {
-        this.setState({
-            status: 'success',
-        })
-    }
-    handleClick = (e) => {
-        // this.setState({ status: "pending" });
-            
+    const handleImageClick = (value) => {
+      setLargeURL(value);
+      setStatus("modal"); 
+     
+  }
+  
+    const onModalClose = () => {
+        setStatus("success"); 
+  }
+  
+   const handleClick = (e) => {            
       picsearch.page = 1;
       picsearch.search()
         .then(searchResults => {
-          this.setState(prev => ({
-            searchResults: [...prev.searchResults, ...searchResults.hits],
-            status: 'success'}));
+          setSearchResults((prev)=>[...prev, ...searchResults.hits]);
+          setStatus("success"); 
+          
           window.scrollTo({
             top: document.documentElement.scrollHeight,
             behavior: 'smooth',
           })
         })
-        .catch((er) => { this.setState({ status: 'error', errorMessage: er }) });
-        
-    }
-
-  render() {
-   const {status, searchResults, serchHits, largeURL, errorMessage } = this.state
+        .catch((er) => {
+          setErrorMessage(er);
+          setStatus("error");          
+        });        
+    }  
+   
     if (status === 'init') {
       return <h1 className="title">Hello! Search something</h1>;
     }
@@ -85,11 +83,11 @@ export default class ImageGallery extends Component {
               <ul className="ImageGallery">
                   {searchResults.map(el => (
                       
-                    < ImageGalleryItem key ={el.id} item={el} handleImageClick = {this.handleImageClick} />)                                      
+                    < ImageGalleryItem key ={el.id} item={el} handleImageClick = {handleImageClick} />)                                      
                    
                 )}
             </ul>
-              {(serchHits > 15) && <button className ="Button" type="button" id='more' onClick={this.handleClick}>
+              {(searchHits > 15) && <button className ="Button" type="button" id='more' onClick={handleClick}>
                   load more
               </button>}
           
@@ -97,7 +95,7 @@ export default class ImageGallery extends Component {
       );
      }
      if (status === 'modal') {
-         return <Modal largeImageURL={ largeURL} onModalClose = {this.onModalClose} />
+         return <Modal largeImageURL={ largeURL} onModalClose = {onModalClose} />
      }
    if (status === 'error') {
       
@@ -107,9 +105,13 @@ export default class ImageGallery extends Component {
         text={errorMessage}
        
       />
-    }
   }
+  
 
-   
+  
+};
+
+ImageGallery.propTypes = {
+  searchQuery: PropTypes.string,
 }
            

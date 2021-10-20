@@ -1,32 +1,25 @@
 // import './App.css';
 
-import { Component } from 'react/cjs/react.production.min';
+import { useState } from 'react';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Searchbar from './Searchbar/Searchbar';
 
-class App extends Component {
-  state = {
-    searchQue: ' ',
+function App () {
+  const [searchQue, setSearchQue] = useState('');
+  
+  const onFormSubmit = input => {
+    setSearchQue(input);
   };
 
-  componentDidMount() {}
-
-  componentDidUpdate() {}
-
-  onFormSubmit = input => {
-    this.setState({
-      searchQue: input,
-    });
-  };
-
-  render() {
+  
     return (
       <div className="App">
-        <Searchbar onSubmit={this.onFormSubmit} />
-        <ImageGallery searchQuery={this.state.searchQue} />
+        <Searchbar onSubmit={onFormSubmit} />
+        <ImageGallery searchQuery={searchQue} />
       </div>
     );
-  }
-}
+  
+};
+
 
 export default App;
